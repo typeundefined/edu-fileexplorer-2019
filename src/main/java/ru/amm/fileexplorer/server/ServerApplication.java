@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @SpringBootApplication
-
+@EnableConfigurationProperties({FileManager.class})
 public class ServerApplication {
 
 

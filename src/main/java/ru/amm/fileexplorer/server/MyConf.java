@@ -6,12 +6,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-@Configuration
-@PropertySource("classpath:application.properties")
+//@Configuration
+//@PropertySource("classpath:application.properties")
 public class MyConf {
 
-   @Bean
-    public MyFile createFile(@Value("${filemanager.path-to-publish}") String arg) {
-        return new MyFile(arg);
-    }
+//   @Bean
+//    public MyFile createFile(@Value("${filemanager.path-to-publish}") String arg) {
+//        return new MyFile(arg);
+//    }
+//
+//    @Bean
+//    public FileManager createFileManager(MyFile f){
+//       return new FileManager(f);
+//    }
 }

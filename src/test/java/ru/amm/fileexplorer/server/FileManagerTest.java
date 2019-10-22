@@ -18,12 +18,12 @@ class FileManagerTest {
 
     @Test
     void fileManagerPathToPublishIsCorrect(){
-        assertEquals(fileManager.getRoot().getAbsolutePath(),"D:\\webm");
+        assertEquals(fileManager.getPathToPublish().getAbsolutePath(),"D:\\webm");
     }
 
     @Test
     void iteratorTest(){
-       Iterator<MyFile> it = fileManager.getRoot().iterator();
+       Iterator<MyFile> it = fileManager.getPathToPublish().iterator();
        while (it.hasNext()){
            System.out.println(it.next().getAbsolutePath());
        }

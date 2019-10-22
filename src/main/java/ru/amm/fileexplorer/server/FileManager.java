@@ -8,33 +8,17 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@Lazy
+@ConfigurationProperties(prefix = "filemanager")
 public class FileManager {
 
+    private MyFile pathToPublish;
 
-    private MyFile root;
-    //private String pathToPublish;
 
-    public void setRoot(MyFile root) {
-        this.root = root;
+    public MyFile getPathToPublish() {
+        return pathToPublish;
     }
 
-//    public String getPathToPublish() {
-//        return pathToPublish;
-//    }
-
-//    public void setPathToPublish(String pathToPublish) {
-//        root = new MyFile(pathToPublish);
-//    }
-
-    public FileManager(MyFile root) {
-        this.root = root;
+    public void setPathToPublish(MyFile pathToPublish) {
+        this.pathToPublish = pathToPublish;
     }
-
-    public MyFile getRoot() {
-        return root;
-    }
-
-
-
 }
