@@ -2,9 +2,11 @@ package ru.amm.fileexplorer.server.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import ru.amm.fileexplorer.server.FileExplorer;
 import ru.amm.fileexplorer.server.entity.FileStore;
-import ru.amm.fileexplorer.server.utils.Config;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -13,17 +15,18 @@ import java.sql.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+@Configuration
+@PropertySource("classpath:application.properties")
 public class FileExplorerService implements FileExplorer {
 
-    private final Config config;
-    private final String pathToPublish;
+    @Value("${pathToPublish}")
+    private String pathToPublish;
 
-    public FileExplorerService() {
-        this.config = new Config();
-        this.pathToPublish = config.get("pathToPublish");
+    private final static Logger LOG = LogManager.getLogger(FileExplorerService.class);
+
+    public String getPathToPublish() {
+        return pathToPublish;
     }
-
-    private final static Logger LOG = LogManager.getLogger(Config.class);
 
     @Override
     public List<FileStore> getFileList(String path) {
