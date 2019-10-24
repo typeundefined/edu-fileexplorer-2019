@@ -1,13 +1,43 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>File Explorer</title>
+
+    <link href="css/main.css" rel="stylesheet">
 </head>
+
 <body>
-    hello world!
+<div id="content"></div>
+
+<script>
+        window.onload = function () {
+
+            $.getJSON('/files/get_all', function (files) {
+
+                for (let i = 0; i < files.length; i++) {
+                    let code = "";
+                    code += '<div class="file">';
+                    code += '<div class="file__name">name:' + files[i].name + '</div>';
+                    code += '<div class="file__path">path:' + files[i].path + '</div>';
+                    code += '</div>';
+                    $('#content').append(code);
+                }
+            });
+        };
+
+
+
+
+
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </body>
+
 </html>

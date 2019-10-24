@@ -1,0 +1,13 @@
+.file {
+    margin-top: 10px;
+}
+
+.file__name {
+    width: 100%;
+}
+
+.file__path {
+    width: 100%;
+    color: gray;
+    font-style: italic;
+}
