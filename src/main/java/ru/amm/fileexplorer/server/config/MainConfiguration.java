@@ -28,7 +28,7 @@ public class MainConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/scripts/**")
-                .addResourceLocations("classpath:/static/scripts");
+                .addResourceLocations("classpath:/static/scripts/");
     }
 
     @Bean
