@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>File Explorer</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+<div id="root">
+
+</div>
+
+<script>
+    window.onload = function () {
+
+
+        $.getJSON('/fileService',   function(files) {
+            let root = $('#root');
+            root.empty();
+            for (let i = 0; i < files.length; i++) {
+                let code = "<div class='file'>" +
+                    `<div class='file__name'>${files[i].name}</div>` +
+                    `<div class='file__path'>${files[i].path}</div>` +
+                    "</div>";
+                root.append(code);
+            }
+        });
+
+        $(document).on("click", ".file__path", function (elem) {
+            $.post(
+                '/fileService',
+                {
+                    path: `${elem.target.innerText}`
+                },
+                function(files) {
+                    let root = $('#root');
+                    root.empty();
+                    for (let i = 0; i < files.length; i++) {
+                        let code = "<div class='file'>" +
+                            `<div class='file__name'>${files[i].name}</div>` +
+                            `<div class='file__path'>${files[i].path}</div>` +
+                            "</div>";
+                        root.append(code);
+                    }
+                }
+            )
+        });
+    };
+
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</body>
+
+</html>

@@ -1,3 +1,5 @@
+package ru.amm.fileexplorer.server;
+
 import org.junit.Test;
 import ru.amm.fileexplorer.server.MathEvaluator;
 
