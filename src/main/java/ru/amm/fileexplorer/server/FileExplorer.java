@@ -6,6 +6,10 @@ import java.util.List;
 
 public interface FileExplorer {
 
-    List<FileStore> getFileList(String path);
+    List<FileStore> getFileList();
+
+    void changeDir(String path);
+
+    String getPathToPublish();
 
 }
