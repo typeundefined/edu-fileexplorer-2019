@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Service;
 import ru.amm.fileexplorer.server.FileExplorer;
 import ru.amm.fileexplorer.server.entity.FileStore;
 
@@ -17,8 +18,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-@Configuration
-@PropertySource("classpath:application.properties")
+@Service
 public class FileExplorerService implements FileExplorer, Iterable<FileStore> {
 
     @Value("${pathToPublish}")
@@ -27,7 +27,7 @@ public class FileExplorerService implements FileExplorer, Iterable<FileStore> {
     private List<FileStore> fileList = new ArrayList<>();
 
     public FileExplorerService() {
-        fillFileList("");
+        //fillFileList("");
     }
 
     public String getPathToPublish() {
