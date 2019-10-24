@@ -16,6 +16,8 @@
 
     <properties>
         <java.version>11</java.version>
+        <ftl.version>2.3.29</ftl.version>
+        <encoding>UTF-8</encoding>
     </properties>
 
     <dependencies>
@@ -50,6 +52,11 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${ftl.version}</version>
         </dependency>
     </dependencies>
 
