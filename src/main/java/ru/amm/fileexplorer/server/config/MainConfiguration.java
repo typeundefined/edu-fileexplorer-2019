@@ -22,7 +22,6 @@ public class MainConfiguration implements WebMvcConfigurer {
     public FreeMarkerViewResolver freemarkerViewResolver() {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
         resolver.setContentType("text/html;charset=UTF-8");
-
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");

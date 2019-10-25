@@ -12,10 +12,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequestMapping(value={"/"},  produces = "text/plain;charset=UTF-8")
+
 
 public class IndexController {
-    @RequestMapping(path="/", method = RequestMethod.GET,produces = "text/plain;charset=UTF-8")
+    @RequestMapping(path="/", method = RequestMethod.GET)
     public ModelAndView index() {
         Map<String, String> data = new HashMap<>();
         data.put("username", "Вася");
