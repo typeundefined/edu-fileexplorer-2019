@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,6 +21,7 @@ public class MainConfiguration implements WebMvcConfigurer {
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setContentType("text/html;charset=UTF-8");
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
@@ -28,7 +31,9 @@ public class MainConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/scripts/**")
-                .addResourceLocations("classpath:/static/scripts/");
+                .addResourceLocations("classpath:/static1/scripts/");
+       registry.addResourceHandler("/css/**")
+               .addResourceLocations("classpath:/static1/css/");
     }
 
     @Bean
@@ -36,6 +41,10 @@ public class MainConfiguration implements WebMvcConfigurer {
         LOG.info("My name: {}", myName);
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath("classpath:/templates/");
+
         return freeMarkerConfigurer;
     }
+
+
+
 }
