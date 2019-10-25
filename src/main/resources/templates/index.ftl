@@ -6,7 +6,7 @@
     <title>Hello</title>
     <meta charset="utf-8">
     <script type="text/javascript" src="/scripts/jquery-3.4.1.js"></script>
-    <link rel="stylesheet" href="/scripts/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/scripts/css/css/bootstrap.min.css">
 
   </head>
   <body>
