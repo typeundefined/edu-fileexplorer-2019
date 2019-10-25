@@ -1,10 +1,13 @@
 <#ftl output_format="HTML">
 <!doctype html>
-<html>
+<html lang="ru">
   <head>
+
     <title>Hello</title>
+    <meta charset="utf-8">
     <script type="text/javascript" src="/scripts/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="/scripts/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+
   </head>
   <body>
     <div>
@@ -15,6 +18,6 @@
      <p> Username: ${username}
       привет</p>
     </div>
-    <script src="static/scripts/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    <script src="/scripts/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
   </body>
 </html>
