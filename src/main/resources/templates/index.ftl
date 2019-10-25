@@ -4,9 +4,9 @@
   <head>
 
     <title>Hello</title>
-    <meta charset="utf-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script type="text/javascript" src="/scripts/jquery-3.4.1.js"></script>
-    <link rel="stylesheet" href="/scripts/css/css/bootstrap.min.css">
+
 
   </head>
   <body>
@@ -14,10 +14,10 @@
       <h1>This is just an example page</h1>
     </div>
     <div>
-    <h1>Пример заголовка <span class="badge badge-secondary">New</span></h1>
-     <p> Username: ${username}
+    <h1>Пример заголовка <span class="badge badge-secondary">Username: ${username}</span></h1>
+     <p>
       привет</p>
     </div>
-    <script src="/scripts/bootstrap-4.0.0-dist/js/bootstrap.min.js"></script>
+    <script src="/scripts/bootstrap.min.js"></script>
   </body>
 </html>
