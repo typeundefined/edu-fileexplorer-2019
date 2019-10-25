@@ -16,4 +16,11 @@ public class IndexController {
         data.put("username", "Вася");
         return new ModelAndView("index", data);
     }
+
+    @RequestMapping(path = "/testcss", method = RequestMethod.GET)
+    public ModelAndView testcss() {
+        Map<String, String> data = new HashMap<>();
+        data.put("WhatTest", "CSS");
+        return new ModelAndView("testcss", data);
+    }
 }
