@@ -19,6 +19,7 @@ public class MainConfiguration implements WebMvcConfigurer {
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setContentType("text/html;charset=UTF-8");
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
@@ -29,6 +30,8 @@ public class MainConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/scripts/**")
                 .addResourceLocations("classpath:/static/scripts/");
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/");
     }
 
     @Bean
