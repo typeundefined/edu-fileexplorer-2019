@@ -1,5 +1,19 @@
 <#ftl output_format="HTML">
 <#setting url_escaping_charset="UTF-8">
+<#macro show_file file_elem>
+    <div class="card" style="width: 18rem; margin: 1rem;">
+      <div class="card-body">
+        <#if !file_elem.directory>
+            <h5 class="card-title"><a href="/download?file=${file_elem.relativePath?url}">${file_elem.name}</a></h5>
+            <p class="card-text">Size: ${file_elem.size}</p>
+        </#if>
+        <#if file_elem.directory>
+            <h5 class="card-title">${file_elem.name}</h5>
+            <a href="/?path=${file_elem.relativePath?url}" class="btn btn-primary">Open</a>
+        </#if>
+      </div>
+    </div>
+</#macro>
 <!doctype html>
 <html>
 <head>
@@ -8,27 +22,9 @@
     <script type="text/javascript" src="/scripts/jquery-3.4.1.js"></script>
 </head>
 <body>
-<div>
-    <h1>This is just an example page</h1>
-</div>
-<div>
-    <span class="badge-success">${directory.directoryName}</span>
-    привет
-    <br>
-    <br>
-    <a onclick="return location.href = 'http://localhost:8080/testcss/'" class="btn btn-info" role="button">Test CSS</a>
-</div>
 <div class="container">
 <#list directory.files as f>
-<div class="card" style="width: 18rem; margin: 1rem;">
-  <div class="card-body">
-    <h5 class="card-title">${f.name}</h5>
-    <p class="card-text">Some other attributes here...</p>
-    <#if f.directory>
-        <a href="/?path=${f.relativePath?url}" class="btn btn-primary">Open</a>
-    </#if>
-  </div>
-</div>
+    <@show_file f/>
 </#list>
 </div>
 </body>
