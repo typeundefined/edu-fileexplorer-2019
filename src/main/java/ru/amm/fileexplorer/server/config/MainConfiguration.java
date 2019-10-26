@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
@@ -32,6 +31,8 @@ public class MainConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/scripts/");
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/img/**")
+                .addResourceLocations("classpath:/static/img/");
     }
 
     @Bean
