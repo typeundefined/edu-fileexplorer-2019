@@ -50,8 +50,8 @@ public class FileSystemProvider {
 
     public String getParent(String relativePath) {
         Optional<String> path = ofNullable(Path.of(relativePath))
-                .flatMap(path1 -> ofNullable(path1.getParent()))
-                .map(t -> t.toString());
+                .map(Path::getParent)
+                .map(Path::toString);
         return path.orElse("");
     }
 }
