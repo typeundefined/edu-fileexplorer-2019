@@ -1,25 +1,22 @@
 package ru.amm.fileexplorer.server.entity;
 
-import java.io.Serializable;
-import java.sql.Date;
-import java.util.Objects;
+import java.util.Date;
 
-public class FileStore implements Serializable {
-
-    private static final long serialVersionUID = 34332242345L;
+public class FileData {
+    private String relativePath;
     private String name;
     private Date lastModifiedTime;
     private long size;
     private boolean isDirectory;
 
-    public FileStore(String name, Date lastModifiedTime, long size, boolean isDirectory) {
+    public FileData(String name, Date lastModifiedTime, long size, boolean isDirectory) {
         this.name = name;
         this.lastModifiedTime = lastModifiedTime;
         this.size = size;
         this.isDirectory = isDirectory;
     }
 
-    public FileStore() {
+    public FileData() {
     }
 
     public String getName() {
@@ -54,19 +51,11 @@ public class FileStore implements Serializable {
         isDirectory = directory;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FileStore fileStore = (FileStore) o;
-        return size == fileStore.size &&
-                isDirectory == fileStore.isDirectory &&
-                name.equals(fileStore.name) &&
-                lastModifiedTime.equals(fileStore.lastModifiedTime);
+    public String getRelativePath() {
+        return relativePath;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, lastModifiedTime, size, isDirectory);
+    public void setRelativePath(String relativePath) {
+        this.relativePath = relativePath;
     }
 }
