@@ -24,6 +24,10 @@ public class FileExplorerService {
         return contents;
     }
 
+    public Path getAbsolutePath(Path relativePath) {
+        return provider.getAbsolutePath(relativePath);
+    }
+
     public DirectoryContents getContentsFiltered(String relativePath, FileMatcher matcher) {
         return getDirectoryContents(relativePath, matcher);
     }

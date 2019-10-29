@@ -20,12 +20,12 @@ import static java.util.Optional.ofNullable;
 @Service
 public class FileSystemProvider {
     @Value("${pathToPublish}")
-    private String pathToPublish;
+    private Path pathToPublish;
 
     public List<FileData> fillFileList(String relpath) {
         List<FileData> result = new ArrayList<>();
 
-        Path absPath = Paths.get(pathToPublish, relpath);
+        Path absPath = pathToPublish.resolve(relpath);
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(absPath)) {
             for (Path file : stream) {
                 BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
@@ -36,6 +36,10 @@ public class FileSystemProvider {
             throw new DirectoryAccessException(e);
         }
         return result;
+    }
+
+    public Path getAbsolutePath(Path relPath) {
+        return pathToPublish.resolve(relPath);
     }
 
     private FileData toFileData(Path file, BasicFileAttributes attr, String relpath, String mimeType) {
@@ -51,7 +55,6 @@ public class FileSystemProvider {
             String[] m = mimeType.split("/");
             fileData.setFileType(FileType.get(m[0], m[1]));
         }
-        // TODO: verify this is correct
         fileData.setRelativePath(Path.of(relpath, name).toString());
         return fileData;
     }
@@ -65,7 +68,8 @@ public class FileSystemProvider {
 
     public InputStream getFileStream(String relativePath) {
         try {
-            return new FileInputStream(new File(pathToPublish, relativePath));
+            Path absPath = pathToPublish.resolve(relativePath);
+            return new FileInputStream(absPath.toFile());
         } catch (FileNotFoundException e) {
             throw new DirectoryAccessException(e);
         }
@@ -73,7 +77,7 @@ public class FileSystemProvider {
 
     public InputStream getDirectoryStream(String relativePath) {
         try {
-            Path f = Path.of(pathToPublish, relativePath);
+            Path f = pathToPublish.resolve(relativePath);
             Path tempZip = Files.createTempFile("tmpZip", null);
             try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tempZip.toFile()))) {
                 Files.walkFileTree(f, new SimpleFileVisitor<Path>() {
@@ -97,7 +101,7 @@ public class FileSystemProvider {
 
     public FileData getFile(String relativePath) {
         try {
-            Path f = Paths.get(pathToPublish, relativePath);
+            Path f = pathToPublish.resolve(relativePath);
             BasicFileAttributes attr = Files.readAttributes(f, BasicFileAttributes.class);
             return toFileData(f, attr, relativePath.replace(f.getFileName().toString(), ""), Files.probeContentType(f));
         } catch (IOException e) {
