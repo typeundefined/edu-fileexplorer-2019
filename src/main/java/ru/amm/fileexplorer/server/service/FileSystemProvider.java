@@ -54,4 +54,12 @@ public class FileSystemProvider {
                 .map(Path::toString);
         return path.orElse("");
     }
+
+    public String getPathOfFolder(String path,String pathToPublish) {
+        if (path == null) {
+            path = "";
+        }
+        Path p = Paths.get(pathToPublish, path);
+        return p.toString();
+    }
 }
