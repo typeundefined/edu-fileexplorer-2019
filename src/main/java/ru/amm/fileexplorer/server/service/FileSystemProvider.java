@@ -49,9 +49,11 @@ public class FileSystemProvider {
     }
 
     public String getParent(String relativePath) {
+        if (relativePath.equals(""))
+            return "";
         Optional<String> path = ofNullable(Path.of(relativePath))
                 .map(Path::getParent)
                 .map(Path::toString);
-        return path.orElse("");
+        return path.orElse("%root%");
     }
 }
