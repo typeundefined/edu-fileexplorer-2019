@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.amm.fileexplorer.server.entity.DirectoryContents;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
-import ru.amm.fileexplorer.server.utils.PathUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,6 @@ public class IndexController {
         }
         Map<String, Object> data = new HashMap<>();
         data.put("directory", dirContents);
-        data.put("parent_directory", PathUtils.getParentDirectory(path));
         return new ModelAndView("index", data);
     }
 }

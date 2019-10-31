@@ -58,8 +58,8 @@
          </div>
 
          <#--  go back button  -->
-         <#if parent_directory??>
-         <div class="row bg-white p-3 noselect view" onclick="location.href='/?path=${parent_directory}'">
+         <#if directory.parentDirectoryName != "">
+         <div class="row bg-white p-3 noselect view" onclick="location.href='/?path=${directory.parentDirectoryName}'">
             <div class="col media">
                <img class="pr-2" src="/img/folder.svg" style="height: 24px;">
                ..
