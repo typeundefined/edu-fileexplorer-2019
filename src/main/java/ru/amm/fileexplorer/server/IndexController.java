@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ru.amm.fileexplorer.server.entity.DirectoryContents;
+import ru.amm.fileexplorer.server.entity.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 
 import java.util.HashMap;
@@ -29,6 +30,29 @@ public class IndexController {
         data.put("directory", dirContents);
         return new ModelAndView("index", data);
     }
+
+    @RequestMapping(path = "/search", method = RequestMethod.GET)
+    public ModelAndView search(@RequestParam(name = "search") String search,
+                               @RequestParam(name = "path") String path) {
+        DirectoryContents dirContents;
+        dirContents = explorerService.getContentsFiltered(path, new NamePartialMatcher(search));
+        Map<String, Object> data = new HashMap<>();
+        data.put("directory", dirContents);
+        return new ModelAndView("filesView", data);
+    }
+
+    @RequestMapping(path = "/searchAll", method = RequestMethod.GET)
+    public ModelAndView searchAll(@RequestParam(name = "search") String search,
+                               @RequestParam(name = "path") String path) {
+        DirectoryContents dirContents;
+        if (!search.equals(""))
+            dirContents = explorerService.getContentsFilteredAll(path, new NamePartialMatcher(search));
+        else dirContents = explorerService.getContents(path);
+        Map<String, Object> data = new HashMap<>();
+        data.put("directory", dirContents);
+        return new ModelAndView("filesView", data);
+    }
+
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
     public ModelAndView testcss() {

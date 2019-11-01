@@ -1,54 +1,12 @@
-<#ftl output_format="HTML">
-<#setting url_escaping_charset="UTF-8">
-<#macro show_file file_elem>
-    <#if !file_elem.directory>
-        <div class="row bg-white p-3 noselect view"
-             onclick="location.href='/download?file=${file_elem.relativePath?url}'">
-            <div class="col media">
-                <img class="pr-2" src="/img/file.svg" style="height: 24px;">
-                ${file_elem.name}
-            </div>
-            <div class="col-6 row">
-                <div class="col-8">${file_elem.lastModifiedTime?date}</div>
-                <div class="col-4">${file_elem.size}</div>
-            </div>
-        </div>
-    </#if>
-    <#if file_elem.directory>
-        <div class="row bg-white p-3 noselect view" onclick="location.href='/?path=${file_elem.relativePath?url}'">
-            <div class="col media">
-                <img class="pr-2" src="/img/folder.svg" style="height: 24px;">
-                ${file_elem.name}
-            </div>
-            <div class="col-6 row">
-                <div class="col-8">${file_elem.lastModifiedTime?date}</div>
-                <div class="col-4">&ndash;</div>
-            </div>
-        </div>
-    </#if>
-</#macro>
-<#macro show_parent_directory dir>
-    <#if dir.parentDirectoryName !="">
-        <#if dir.parentDirectoryName =="%root%">
-            <#assign path = '/'>
-        <#else >
-            <#assign path = '/?path='+dir.parentDirectoryName?url>
-        </#if>
-        <div class="row bg-white p-3 noselect view" onclick="location.href='${path}'">
-            <div class="col media">
-                <img class="pr-2" src="/img/folder.svg" style="height: 24px;">
-                ...
-            </div>
-        </div>
-    </#if>
-</#macro>
 <!doctype html>
 <html>
 <head>
     <title>File Manager</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script type="text/javascript" src="/scripts/jquery-3.4.1.js"></script>
-
+    <script type="text/javascript" src="/scripts/sc.js"></script>
+    <script type="text/javascript" src="/scripts/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="/scripts/bootstrap.js"></script>
     <style>
         .noselect {
             -moz-user-select: none;
@@ -71,10 +29,24 @@
             <div class="col-4"><strong>Size</strong></div>
         </div>
     </div>
-    <@show_parent_directory directory/>
-    <#list directory.files as f>
-        <@show_file f/>
-    </#list>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <button type="button" id="search_action" class="btn btn-outline-secondary">Search Here</button>
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" onclick="changeSearch(this)">Search Here</a>
+                <a class="dropdown-item" onclick="changeSearch(this)">Search in children</a>
+            </div>
+        </div>
+        <input type="text" id="search" placeholder="File name" class="form-control" aria-label="Text input with segmented dropdown button">
+    </div>
+    <div id="files_container">
+        <#import "filesView.ftl" as macro>
+        <@macro.show_all directory/>
+    </div>
 </div>
 </body>
 </html>

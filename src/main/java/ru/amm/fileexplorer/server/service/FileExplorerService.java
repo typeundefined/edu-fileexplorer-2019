@@ -9,6 +9,8 @@ import ru.amm.fileexplorer.server.entity.FileData;
 import ru.amm.fileexplorer.server.entity.FileMatcher;
 import ru.amm.fileexplorer.server.entity.NoOpMatcher;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +23,27 @@ public class FileExplorerService {
     private final static Logger LOG = LogManager.getLogger(FileExplorerService.class);
 
     public DirectoryContents getRootContents() {
-        DirectoryContents contents = getDirectoryContents( "", NO_OP_MATCHER);
+        DirectoryContents contents = getDirectoryContents("", NO_OP_MATCHER);
         return contents;
     }
 
     public DirectoryContents getContentsFiltered(String relativePath, FileMatcher matcher) {
         return getDirectoryContents(relativePath, matcher);
+    }
+
+    public DirectoryContents getContentsFilteredAll(String relativePath, FileMatcher matcher) {
+        ArrayList<FileData> content = new ArrayList<>();
+        ArrayDeque<FileData> directories = getContents(relativePath).getFiles().stream()
+                .filter(FileData::isDirectory).collect(Collectors.toCollection(ArrayDeque::new));
+        while (!directories.isEmpty()){
+            FileData f = directories.poll();
+            List<FileData> dirFiles  = getContents(f.getRelativePath()).getFiles();
+            directories.addAll(dirFiles.stream()
+                    .filter(FileData::isDirectory)
+                    .collect(Collectors.toList()));
+            content.addAll(dirFiles.stream().filter(matcher::matches).collect(Collectors.toList()));
+        }
+        return new DirectoryContents("", "", content);
     }
 
     public DirectoryContents getContents(String relativePath) {
@@ -39,7 +56,6 @@ public class FileExplorerService {
                 .filter(t -> matcher.matches(t))
                 .collect(Collectors.toList());
         String parentDir = provider.getParent(relativePath);
-
         return new DirectoryContents(relativePath, parentDir, filteredList);
     }
 }
