@@ -9,6 +9,7 @@ import ru.amm.fileexplorer.server.entity.FileData;
 import ru.amm.fileexplorer.server.entity.FileMatcher;
 import ru.amm.fileexplorer.server.entity.NoOpMatcher;
 
+import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class FileExplorerService {
                     .collect(Collectors.toList()));
             content.addAll(dirFiles.stream().filter(matcher::matches).collect(Collectors.toList()));
         }
-        return new DirectoryContents("", "", content);
+        return new DirectoryContents("%root%", "", content);
     }
 
     public DirectoryContents getContents(String relativePath) {
@@ -57,5 +58,16 @@ public class FileExplorerService {
                 .collect(Collectors.toList());
         String parentDir = provider.getParent(relativePath);
         return new DirectoryContents(relativePath, parentDir, filteredList);
+    }
+
+    public InputStream getFileStream(FileData f) {
+        if (f.isDirectory()){
+            return provider.getDirectoryStream(f.getRelativePath());
+        }
+        return provider.getFileStream(f.getRelativePath());
+    }
+
+    public FileData getFile(String relativePath){
+        return provider.getFile(relativePath);
     }
 }
