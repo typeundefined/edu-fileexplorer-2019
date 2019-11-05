@@ -29,7 +29,7 @@ public class FileSystemProvider {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(absPath)) {
             for (Path file : stream) {
                 BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
-                FileData fileData = toFileData(file, attr, relpath);
+                FileData fileData = toFileData(file, attr, relpath, Files.probeContentType(file));
                 result.add(fileData);
             }
         } catch (IOException | DirectoryIteratorException e) {
@@ -38,17 +38,14 @@ public class FileSystemProvider {
         return result;
     }
 
-    private FileData toFileData(Path file, BasicFileAttributes attr, String relpath) {
+    private FileData toFileData(Path file, BasicFileAttributes attr, String relpath, String mimeType) {
         FileData fileData = new FileData();
         String name = file.getFileName().toString();
         fileData.setName(name);
         fileData.setDirectory(attr.isDirectory());
         fileData.setSize(attr.size());
         fileData.setLastModifiedTime(new Date(attr.lastModifiedTime().toMillis()));
-        try {
-            fileData.setMimeType(Files.probeContentType(file));
-        } catch (IOException ignored) {
-        }
+        fileData.setMimeType(mimeType);
         // TODO: verify this is correct
         fileData.setRelativePath(Path.of(relpath, name).toString());
         return fileData;
@@ -73,16 +70,16 @@ public class FileSystemProvider {
 
     public InputStream getDirectoryStream(String relativePath) {
         try {
-            Path f = Path.of(pathToPublish+"\\"+relativePath);
-            Path tempZip = Files.createTempFile("tmpZip",null);
+            Path f = Path.of(pathToPublish + "\\" + relativePath);
+            Path tempZip = Files.createTempFile("tmpZip", null);
             ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(tempZip.toFile()));
-            Files.walkFileTree(f,new SimpleFileVisitor<Path>(){
+            Files.walkFileTree(f, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                   zos.putNextEntry(new ZipEntry(f.relativize(file).toString()));
-                   Files.copy(file, zos);
-                   zos.closeEntry();
-                   return FileVisitResult.CONTINUE;
+                    zos.putNextEntry(new ZipEntry(f.relativize(file).toString()));
+                    Files.copy(file, zos);
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
                 }
             });
             zos.close();
@@ -92,11 +89,11 @@ public class FileSystemProvider {
         }
     }
 
-    public FileData getFile(String relativePath){
+    public FileData getFile(String relativePath) {
         try {
-            Path f = Paths.get(pathToPublish+"/"+relativePath);
+            Path f = Paths.get(pathToPublish + "/" + relativePath);
             BasicFileAttributes attr = Files.readAttributes(f, BasicFileAttributes.class);
-            return toFileData(f,attr,relativePath.replace(f.getFileName().toString(),""));
+            return toFileData(f, attr, relativePath.replace(f.getFileName().toString(), ""), Files.probeContentType(f));
         } catch (IOException e) {
             throw new DirectoryAccessException(e);
         }
