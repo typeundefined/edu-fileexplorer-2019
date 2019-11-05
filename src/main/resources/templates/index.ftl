@@ -45,19 +45,32 @@
     </style>
 </head>
 <body>
-<div class="container">
-<div class="row bg-white p-3 border-bottom">
-    <div class="col">
-        <strong>Name</strong>
+    <div class="container">
+
+       <div >
+            <form method = "get" action ="/">
+            <div>
+                <input type = "text" name = "quickSearch" value = "${quickSearchPattern}">
+                <button type = "submit" class="btn btn-outline-dark">Search</button>
+            </div>
+            </form>
+        </div>
+
+        <div class="row bg-white p-3 border-bottom">
+            <div class="col">
+            <strong>Name</strong>
+        </div>
+        <div class="col-6 row">
+            <div class="col-8"><strong>Date of change</strong></div>
+            <div class="col-4"><strong>Size</strong></div>
+
+        </div>
     </div>
-    <div class="col-6 row">
-        <div class="col-8"><strong>Date of change</strong></div>
-        <div class="col-4"><strong>Size</strong></div>
+    <#list directory.files as f>
+        <@show_file f/>
+    </#list>
     </div>
-</div>
-<#list directory.files as f>
-    <@show_file f/>
-</#list>
-</div>
+
+
 </body>
 </html>
