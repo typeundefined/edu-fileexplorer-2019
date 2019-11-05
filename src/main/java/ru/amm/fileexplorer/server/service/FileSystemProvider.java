@@ -3,6 +3,7 @@ package ru.amm.fileexplorer.server.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.amm.fileexplorer.server.entity.FileData;
+import ru.amm.fileexplorer.server.entity.FileType;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -35,11 +36,36 @@ public class FileSystemProvider {
         return result;
     }
 
-    private FileData toFileData(Path file, BasicFileAttributes attr, String relpath) {
+    private FileData toFileData(Path file, BasicFileAttributes attr, String relpath) throws IOException {
         FileData fileData = new FileData();
         String name = file.getFileName().toString();
         fileData.setName(name);
-        fileData.setDirectory(attr.isDirectory());
+        String mimeType=Files.probeContentType( file );
+        System.out.println(mimeType );
+        if(mimeType==null)mimeType="directory";
+        switch (mimeType){
+            case "directory":fileData.setType( FileType.DIRECTORY );
+                break;
+            case"image/png":
+            case "image/jpg":
+            case "image/gif":
+                fileData.setType( FileType.IMAGE );
+                break;
+            case "application/x-zip-compressed":
+            case"application/x-rar-compressed":
+                fileData.setType( FileType.ARCHIVE );
+                break;
+            case "audio/mpeg":
+                fileData.setType( FileType.MUSIC );
+                break;
+            case "text/plain":fileData.setType( FileType.TEXT );
+                break;
+
+            default:fileData.setType( FileType.FILE );
+
+
+        }
+
         fileData.setSize(attr.size());
         fileData.setLastModifiedTime(new Date(attr.lastModifiedTime().toMillis()));
 

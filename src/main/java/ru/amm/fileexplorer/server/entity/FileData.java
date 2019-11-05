@@ -8,6 +8,15 @@ public class FileData {
     private Date lastModifiedTime;
     private long size;
     private boolean isDirectory;
+    private FileType type;
+    public FileType getType() {
+        return type;
+    }
+
+    public void setType(FileType type) {
+        this.type = type;
+    }
+
 
     public FileData(String name, Date lastModifiedTime, long size, boolean isDirectory) {
         this.name = name;
