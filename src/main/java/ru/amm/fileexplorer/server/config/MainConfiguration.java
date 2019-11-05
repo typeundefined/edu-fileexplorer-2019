@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
+import ru.amm.fileexplorer.server.entity.FileMatcher;
+import ru.amm.fileexplorer.server.entity.NameMatcher;
 
 @EnableWebMvc
 @Configuration
@@ -19,6 +20,7 @@ public class MainConfiguration implements WebMvcConfigurer {
     @Bean
     public FreeMarkerViewResolver freemarkerViewResolver() {
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setContentType("text/html;charset=UTF-8");
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
@@ -29,6 +31,10 @@ public class MainConfiguration implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/scripts/**")
                 .addResourceLocations("classpath:/static/scripts/");
+        registry.addResourceHandler("/css/**")
+                .addResourceLocations("classpath:/static/css/");
+        registry.addResourceHandler("/img/**")
+                .addResourceLocations("classpath:/static/img/");
     }
 
     @Bean
@@ -38,4 +44,5 @@ public class MainConfiguration implements WebMvcConfigurer {
         freeMarkerConfigurer.setTemplateLoaderPath("classpath:/templates/");
         return freeMarkerConfigurer;
     }
+
 }
