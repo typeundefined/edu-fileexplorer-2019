@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DirectoryContents {
-    private final List<FileData> files = new ArrayList<>();
+    private final List<FileData> files = new ArrayList<>( );
     private String directoryName;
     private String parentDirectoryName;
 
     public DirectoryContents(String directoryName, String parentDirectoryName, List<FileData> fileList) {
         this.directoryName = directoryName;
         this.parentDirectoryName = parentDirectoryName;
-        files.addAll(fileList);
+        files.addAll( fileList );
     }
 
     public List<FileData> getFiles() {
