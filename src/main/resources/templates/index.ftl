@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-<form name="uploadingForm" enctype="multipart/form-data" action="/" method="POST" >
+<form name="uploadingForm" enctype="multipart/form-data" method="POST" >
     <p>
         <input id="fileInput" type="file" name="uploadingFiles" onchange="updateSize();" multiple>
         selected files: <span id="fileNum">0</span>;

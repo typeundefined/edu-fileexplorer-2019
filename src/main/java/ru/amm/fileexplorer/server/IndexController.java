@@ -44,13 +44,22 @@ public class IndexController {
         return new ModelAndView("index", data);
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String uploadingPost(@RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,@RequestParam(name = "path", required = false)  String path) throws IOException {
+        @RequestMapping(value = "/", method = RequestMethod.POST)
+    public ModelAndView uploadingPost(@RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,@RequestParam(name = "path", required = false)  String path) throws IOException {
         for(MultipartFile uploadedFile : uploadingFiles) {
             File file = new File(fullPath +"/" + uploadedFile.getOriginalFilename());
             uploadedFile.transferTo(file);
         }
-        return "redirect:/";
+            DirectoryContents dirContents;
+            if (path == null) {
+                dirContents = explorerService.getRootContents();
+            } else {
+                dirContents = explorerService.getContents(path);
+            }
+            Map<String, Object> data = new HashMap<>();
+            data.put("directory", dirContents);
+            ModelAndView model = new ModelAndView("index",data);
+        return model;
     }
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
