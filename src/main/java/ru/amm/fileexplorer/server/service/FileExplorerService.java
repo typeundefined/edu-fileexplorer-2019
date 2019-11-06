@@ -44,7 +44,7 @@ public class FileExplorerService {
                     .collect(Collectors.toList()));
             content.addAll(dirFiles.stream().filter(matcher::matches).collect(Collectors.toList()));
         }
-        return new DirectoryContents("%root%", "", content);
+        return new DirectoryContents("", "", content);
     }
 
     public DirectoryContents getContents(String relativePath) {

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import ru.amm.fileexplorer.server.entity.DirectoryContents;
 import ru.amm.fileexplorer.server.entity.FileData;
+import ru.amm.fileexplorer.server.entity.FileType;
 import ru.amm.fileexplorer.server.entity.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 
@@ -69,21 +70,18 @@ public class IndexController {
     public ResponseEntity<Resource> downloadFile(@RequestParam(name = "file") String file) {
         FileData f = explorerService.getFile(file);
         InputStreamResource fStream = new InputStreamResource(explorerService.getFileStream(f));
-        String[] type;
-        String fName;
+        String fName = f.getName();
+        FileType fType = f.getFileType();
         if (f.isDirectory()) {
-            type = new String[]{"application", "zip"};
-            fName = f.getName() + ".zip";
-        } else {
-            type = f.getMimeType().split("/");
-            fName = f.getName();
+            fName += ".zip";
+            f.getFileType().setExtension("zip");
         }
         ContentDisposition content = ContentDisposition.builder("attachment")
                 .filename(fName, StandardCharsets.UTF_8)
                 .build();
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,content.toString())
-                .contentType(new MediaType(type[0], type[1]))
+                .header(HttpHeaders.CONTENT_DISPOSITION, content.toString())
+                .contentType(new MediaType(fType.getBase(), fType.getExtension()))
                 .body(fStream);
 
     }

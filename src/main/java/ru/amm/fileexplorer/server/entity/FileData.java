@@ -8,7 +8,7 @@ public class FileData {
     private Date lastModifiedTime;
     private long size;
     private boolean isDirectory;
-    private String mimeType;
+    private FileType fileType;
 
     public FileData(String name, Date lastModifiedTime, long size, boolean isDirectory) {
         this.name = name;
@@ -60,11 +60,10 @@ public class FileData {
         this.relativePath = relativePath;
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public FileType getFileType() {
+        return fileType;
     }
-
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
     }
 }

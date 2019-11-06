@@ -41,7 +41,8 @@
                 <a class="dropdown-item" onclick="changeSearch(this)">Search in children</a>
             </div>
         </div>
-        <input type="text" id="search" placeholder="File name" class="form-control" aria-label="Text input with segmented dropdown button">
+        <input type="text" id="search" placeholder="File name" class="form-control"
+               aria-label="Text input with segmented dropdown button">
     </div>
     <div id="files_container">
         <#import "filesView.ftl" as macro>
