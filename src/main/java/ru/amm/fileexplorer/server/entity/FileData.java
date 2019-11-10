@@ -8,6 +8,7 @@ public class FileData {
     private Date lastModifiedTime;
     private long size;
     private boolean isDirectory;
+    private FileType fileType;
 
     public FileData(String name, Date lastModifiedTime, long size, boolean isDirectory) {
         this.name = name;
@@ -57,5 +58,12 @@ public class FileData {
 
     public void setRelativePath(String relativePath) {
         this.relativePath = relativePath;
+    }
+
+    public FileType getFileType() {
+        return fileType;
+    }
+    public void setFileType(FileType fileType) {
+        this.fileType = fileType;
     }
 }
