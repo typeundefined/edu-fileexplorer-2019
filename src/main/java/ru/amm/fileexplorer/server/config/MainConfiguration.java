@@ -36,8 +36,7 @@ public class MainConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public FreeMarkerConfigurer freeMarkerConfigurer(@Value("${my.name}") String myName) {
-        LOG.info("My name: {}", myName);
+    public FreeMarkerConfigurer freeMarkerConfigurer() {
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath("classpath:/templates/");
         return freeMarkerConfigurer;
