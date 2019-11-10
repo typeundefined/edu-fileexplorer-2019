@@ -64,7 +64,6 @@ public class FileSystemProvider {
         return path.orElse("");
     }
 
-
     public InputStream getFileStream(String relativePath) {
         try {
             return new FileInputStream(new File(pathToPublish, relativePath));
@@ -105,5 +104,12 @@ public class FileSystemProvider {
         } catch (IOException e) {
             throw new DirectoryAccessException(e);
         }
+    }
+    public String getPathOfFolder(String path,String pathToPublish) {
+        if (path == null) {
+            path = "";
+        }
+        Path p = Paths.get(pathToPublish, path);
+        return p.toString();
     }
 }
