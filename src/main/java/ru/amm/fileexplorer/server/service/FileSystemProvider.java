@@ -108,4 +108,11 @@ public class FileSystemProvider {
             throw new DirectoryAccessException(e);
         }
     }
+    public String getPathOfFolder(String path,String pathToPublish) {
+        if (path == null) {
+            path = "";
+        }
+        Path p = Paths.get(pathToPublish, path);
+        return p.toString();
+    }
 }
