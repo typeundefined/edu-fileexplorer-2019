@@ -34,7 +34,8 @@
         </button>
     </p>
     <div class="collapse" id="collapseExample">
-        <form name="uploadingForm" enctype="multipart/form-data" method="POST" >
+        <form name="uploadingForm" enctype="multipart/form-data" method="POST">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <p>
                 <label class="btn btn-outline-secondary">
                     Browse<input id="fileInput" hidden class="btn btn-primary" type="file" name="uploadingFiles" onchange="updateSize();" multiple>
