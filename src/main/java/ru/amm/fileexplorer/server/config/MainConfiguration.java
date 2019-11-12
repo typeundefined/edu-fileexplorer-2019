@@ -15,11 +15,13 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 @Configuration
 public class MainConfiguration implements WebMvcConfigurer {
     private final static Logger LOG = LoggerFactory.getLogger(MainConfiguration.class);
+
     @Bean
-    public FreeMarkerViewResolver freemarkerViewResolver() {
+    public FreeMarkerViewResolver freemarkerViewResolver(@Value("${explorer.template.cacheEnabled}") boolean cacheEnabled) {
+        LOG.debug("FTL caching enabled = {}", cacheEnabled);
         FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
         resolver.setContentType("text/html;charset=UTF-8");
-        resolver.setCache(true);
+        resolver.setCache(cacheEnabled);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
         return resolver;
@@ -36,10 +38,10 @@ public class MainConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public FreeMarkerConfigurer freeMarkerConfigurer(@Value("${my.name}") String myName) {
-        LOG.info("My name: {}", myName);
+    public FreeMarkerConfigurer freeMarkerConfigurer(@Value("${explorer.template.path}") String templatePath) {
+        LOG.debug("FTL will be loaded from: {}", templatePath);
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
-        freeMarkerConfigurer.setTemplateLoaderPath("classpath:/templates/");
+        freeMarkerConfigurer.setTemplateLoaderPath(templatePath);
         return freeMarkerConfigurer;
     }
 }
