@@ -14,14 +14,13 @@
     </style>
 </head>
 <body>
-
-	<nav aria-label="breadcrumb">
-		<ol class="breadcrumb">
-    <#list directory.parentFolders as folder>
-			<li class="breadcrumb-item"><a href="/?path=${folder.path?url}">${folder.name}</a></li>
-    </#list>
-		</ol>
-	</nav>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <#list directory.parentFolders as folder>
+              <li class="breadcrumb-item"><a href="/?path=${folder.path?url}">${folder.name}</a></li>
+      </#list>
+    </ol>
+  </nav>
 <div class="container">
     <div class="input-group mb-3 search">
         <input type="text" id="search" placeholder="File name" class="form-control"
