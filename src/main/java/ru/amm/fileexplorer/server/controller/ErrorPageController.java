@@ -1,5 +1,6 @@
 package ru.amm.fileexplorer.server.controller;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/error")
-public class ErrorPageController implements org.springframework.boot.web.servlet.error.ErrorController {
+public class ErrorPageController implements ErrorController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView processError(HttpServletRequest req) {
         int status = getErrorCode(req);
