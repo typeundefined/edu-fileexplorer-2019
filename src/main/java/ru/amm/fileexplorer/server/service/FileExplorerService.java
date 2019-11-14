@@ -4,15 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.amm.fileexplorer.server.entity.DirectoryContents;
-import ru.amm.fileexplorer.server.entity.FileData;
-import ru.amm.fileexplorer.server.entity.FileMatcher;
-import ru.amm.fileexplorer.server.entity.NoOpMatcher;
+import ru.amm.fileexplorer.server.entity.*;
 
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,15 +32,15 @@ public class FileExplorerService {
         ArrayList<FileData> content = new ArrayList<>();
         ArrayDeque<FileData> directories = getContents(relativePath).getFiles().stream()
                 .filter(FileData::isDirectory).collect(Collectors.toCollection(ArrayDeque::new));
-        while (!directories.isEmpty()){
+        while (!directories.isEmpty()) {
             FileData f = directories.poll();
-            List<FileData> dirFiles  = getContents(f.getRelativePath()).getFiles();
+            List<FileData> dirFiles = getContents(f.getRelativePath()).getFiles();
             directories.addAll(dirFiles.stream()
                     .filter(FileData::isDirectory)
                     .collect(Collectors.toList()));
             content.addAll(dirFiles.stream().filter(matcher::matches).collect(Collectors.toList()));
         }
-        return new DirectoryContents("", "", content);
+        return getDirectoryContents("", content, "");
     }
 
     public DirectoryContents getContents(String relativePath) {
@@ -57,17 +53,38 @@ public class FileExplorerService {
                 .filter(t -> matcher.matches(t))
                 .collect(Collectors.toList());
         String parentDir = provider.getParent(relativePath);
-        return new DirectoryContents(relativePath, parentDir, filteredList);
+
+        return FileExplorerService.this.getDirectoryContents(relativePath, filteredList, parentDir);
+    }
+
+    private DirectoryContents getDirectoryContents(String relativePath, List<FileData> filteredList, String parentDir) {
+
+        DirectoryContents dc = new DirectoryContents(relativePath, parentDir, filteredList);
+        dc.getParentFolders().addAll(getParentFolders(relativePath));
+        return dc;
+    }
+
+    private List<ParentFolder> getParentFolders(String relativePath) {
+        LinkedList<ParentFolder> parents = new LinkedList<>();
+        Path path = Path.of(relativePath);
+
+        while (path != null && path.getNameCount() > 0) {
+            parents.addFirst(new ParentFolder(path.getFileName().toString(),
+                    path.toString()));
+            path = path.getParent();
+        }
+        parents.addFirst(new ParentFolder("/", "/"));
+        return parents;
     }
 
     public InputStream getFileStream(FileData f) {
-        if (f.isDirectory()){
+        if (f.isDirectory()) {
             return provider.getDirectoryStream(f.getRelativePath());
         }
         return provider.getFileStream(f.getRelativePath());
     }
 
-    public FileData getFile(String relativePath){
+    public FileData getFile(String relativePath) {
         return provider.getFile(relativePath);
     }
 }

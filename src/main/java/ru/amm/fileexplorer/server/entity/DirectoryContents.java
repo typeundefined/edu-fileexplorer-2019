@@ -5,6 +5,7 @@ import java.util.List;
 
 public class DirectoryContents {
     private final List<FileData> files = new ArrayList<>();
+    private final List<ParentFolder> parentFolders = new ArrayList<>();
     private String directoryName;
     private String parentDirectoryName;
 
@@ -28,6 +29,10 @@ public class DirectoryContents {
 
     public String getParentDirectoryName() {
         return parentDirectoryName;
+    }
+
+    public List<ParentFolder> getParentFolders() {
+        return parentFolders;
     }
 
     public void setParentDirectoryName(String parentDirectoryName) {

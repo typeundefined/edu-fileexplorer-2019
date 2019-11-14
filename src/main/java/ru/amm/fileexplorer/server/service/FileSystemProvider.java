@@ -46,9 +46,9 @@ public class FileSystemProvider {
         fileData.setDirectory(attr.isDirectory());
         fileData.setSize(attr.size());
         fileData.setLastModifiedTime(new Date(attr.lastModifiedTime().toMillis()));
-        if (mimeType == null){
+        if (mimeType == null) {
             fileData.setFileType(FileType.get());
-        }else {
+        } else {
             String[] m = mimeType.split("/");
             fileData.setFileType(FileType.get(m[0], m[1]));
         }
