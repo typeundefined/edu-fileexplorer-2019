@@ -1,4 +1,4 @@
-package ru.amm.fileexplorer.server.entity;
+package ru.amm.fileexplorer.server.data;
 
 import java.util.ArrayList;
 import java.util.List;

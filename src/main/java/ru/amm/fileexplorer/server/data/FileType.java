@@ -1,4 +1,4 @@
-package ru.amm.fileexplorer.server.entity;
+package ru.amm.fileexplorer.server.data;
 
 public enum FileType {
     APPLICATION("application"),

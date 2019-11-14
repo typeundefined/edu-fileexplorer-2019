@@ -1,4 +1,4 @@
-package ru.amm.fileexplorer.server;
+package ru.amm.fileexplorer.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -12,18 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import ru.amm.fileexplorer.server.entity.DirectoryContents;
-import ru.amm.fileexplorer.server.entity.FileData;
-import ru.amm.fileexplorer.server.entity.FileType;
-import ru.amm.fileexplorer.server.entity.NamePartialMatcher;
+import ru.amm.fileexplorer.server.data.DirectoryContents;
+import ru.amm.fileexplorer.server.data.FileData;
+import ru.amm.fileexplorer.server.data.FileType;
+import ru.amm.fileexplorer.server.data.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
