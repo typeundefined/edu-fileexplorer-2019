@@ -2,9 +2,8 @@ package ru.amm.fileexplorer.server.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import ru.amm.fileexplorer.server.entity.DirectoryContents;
-import ru.amm.fileexplorer.server.entity.FileData;
-import ru.amm.fileexplorer.server.entity.FileType;
+import ru.amm.fileexplorer.server.data.FileData;
+import ru.amm.fileexplorer.server.data.FileType;
 
 import java.io.*;
 import java.nio.file.*;
@@ -46,9 +45,9 @@ public class FileSystemProvider {
         fileData.setDirectory(attr.isDirectory());
         fileData.setSize(attr.size());
         fileData.setLastModifiedTime(new Date(attr.lastModifiedTime().toMillis()));
-        if (mimeType == null){
+        if (mimeType == null) {
             fileData.setFileType(FileType.get());
-        }else {
+        } else {
             String[] m = mimeType.split("/");
             fileData.setFileType(FileType.get(m[0], m[1]));
         }
