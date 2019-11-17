@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.amm.fileexplorer.server.data.DirectoryContents;
 import ru.amm.fileexplorer.server.data.FileData;
 import ru.amm.fileexplorer.server.data.FileType;
@@ -90,12 +91,18 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public String uploadingPost(@RequestParam("uploadingFiles") MultipartFile[] uploadingFiles, @RequestParam(name = "path", required = false) Path path) throws IOException {
+    public String uploadingPost(
+            @RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,
+            @RequestParam(name = "path", required = false) Path path,
+            RedirectAttributes attributes)
+            throws IOException {
         Path destPath = explorerService.getAbsolutePath(path);
         for (MultipartFile uploadedFile : uploadingFiles) {
             File file = destPath.resolve(uploadedFile.getOriginalFilename()).toFile();
             uploadedFile.transferTo(file);
         }
+        // preserve ?path= GET parameter after the redirect
+        attributes.addAttribute("path", path.toString());
         return "redirect:/";
     }
 
