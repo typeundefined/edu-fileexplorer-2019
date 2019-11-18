@@ -32,19 +32,30 @@ import java.util.Map;
 
 @Controller
 public class IndexController {
+    @Value("${pathToPublish}")
+    String pathToPublish;
+    @Value("${baseNameOfFolder}")
+    String baseNameOfFolder;
     @Autowired
     private FileExplorerService explorerService;
 
+
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public ModelAndView index(@RequestParam(name = "path", required = false) String path) {
+    public ModelAndView index(@RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder) {
         DirectoryContents dirContents;
         if (path == null) {
             dirContents = explorerService.getRootContents();
+            path = pathToPublish;
         } else {
             dirContents = explorerService.getContents(path);
         }
+        if (nameOfFolder == null) {
+            nameOfFolder = baseNameOfFolder;
+        }
         Map<String, Object> data = new HashMap<>();
         data.put("directory", dirContents);
+        data.put("nameOfFolder", nameOfFolder);
+        data.put("path", path);
         return new ModelAndView("index", data);
     }
 
@@ -103,6 +114,23 @@ public class IndexController {
         }
         // preserve ?path= GET parameter after the redirect
         attributes.addAttribute("path", path.toString());
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/createDir", method = RequestMethod.POST)
+    public String createDirPost(@RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder,
+                                RedirectAttributes attributes) throws IOException {
+        String newNameOfFolder = "";
+        if (nameOfFolder.equals(baseNameOfFolder + ",")) {
+            newNameOfFolder = baseNameOfFolder;
+        } else {
+            newNameOfFolder = nameOfFolder.replaceAll(baseNameOfFolder + ",", "");
+        }
+        String absPath = pathToPublish + "\\" + path + "\\" + newNameOfFolder;
+        File dir = new File(absPath);
+        dir.mkdir();
+        // preserve ?path= GET parameter after the redirect
+        attributes.addAttribute("path", path);
         return "redirect:/";
     }
 
