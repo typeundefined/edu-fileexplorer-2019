@@ -1,4 +1,4 @@
-package ru.amm.fileexplorer.server;
+package ru.amm.fileexplorer.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,21 +15,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import ru.amm.fileexplorer.server.entity.DirectoryContents;
-import ru.amm.fileexplorer.server.entity.FileData;
-import ru.amm.fileexplorer.server.entity.FileType;
-import ru.amm.fileexplorer.server.entity.NamePartialMatcher;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.amm.fileexplorer.server.data.DirectoryContents;
+import ru.amm.fileexplorer.server.data.FileData;
+import ru.amm.fileexplorer.server.data.FileType;
+import ru.amm.fileexplorer.server.data.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 import ru.amm.fileexplorer.server.service.FileSystemProvider;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -118,7 +116,22 @@ public class IndexController {
                 .body(fStream);
 
     }
-
+    
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public String uploadingPost(
+            @RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,
+            @RequestParam(name = "path", required = false) Path path,
+            RedirectAttributes attributes)
+            throws IOException {
+        Path destPath = explorerService.getAbsolutePath(path);
+        for (MultipartFile uploadedFile : uploadingFiles) {
+            File file = destPath.resolve(uploadedFile.getOriginalFilename()).toFile();
+            uploadedFile.transferTo(file);
+        }
+        // preserve ?path= GET parameter after the redirect
+        attributes.addAttribute("path", path.toString());
+        return "redirect:/";
+    }
 
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
