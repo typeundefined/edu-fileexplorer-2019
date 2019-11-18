@@ -34,18 +34,9 @@ import java.util.Map;
 public class IndexController {
     @Autowired
     private FileExplorerService explorerService;
-    @Value("${pathToPublish}")
-    private String pathToPublish;
-    private String fullPath;
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public ModelAndView index(@RequestParam(name = "path", required = false) String path, Model model) {
-
-        FileSystemProvider fileSystemProvider = new FileSystemProvider();
-        fullPath = fileSystemProvider.getPathOfFolder(path,pathToPublish);
-        File file = new File(fullPath);
-        model.addAttribute("files", file.listFiles());
-
+    public ModelAndView index(@RequestParam(name = "path", required = false) String path) {
         DirectoryContents dirContents;
         if (path == null) {
             dirContents = explorerService.getRootContents();
@@ -55,24 +46,6 @@ public class IndexController {
         Map<String, Object> data = new HashMap<>();
         data.put("directory", dirContents);
         return new ModelAndView("index", data);
-    }
-
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ModelAndView uploadingPost(@RequestParam("uploadingFiles") MultipartFile[] uploadingFiles, @RequestParam(name = "path", required = false)  String path) throws IOException {
-        for(MultipartFile uploadedFile : uploadingFiles) {
-            File file = new File(fullPath +"/" + uploadedFile.getOriginalFilename());
-            uploadedFile.transferTo(file);
-        }
-        DirectoryContents dirContents;
-        if (path == null) {
-            dirContents = explorerService.getRootContents();
-        } else {
-            dirContents = explorerService.getContents(path);
-        }
-        Map<String, Object> data = new HashMap<>();
-        data.put("directory", dirContents);
-        ModelAndView model = new ModelAndView("index",data);
-        return model;
     }
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)
@@ -116,7 +89,7 @@ public class IndexController {
                 .body(fStream);
 
     }
-    
+
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String uploadingPost(
             @RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,
@@ -132,7 +105,6 @@ public class IndexController {
         attributes.addAttribute("path", path.toString());
         return "redirect:/";
     }
-
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
     public ModelAndView testcss() {
