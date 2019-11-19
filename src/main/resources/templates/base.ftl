@@ -20,6 +20,7 @@
 </head>
 <body>
   <@page_body />
+
 </body>
 </html>
 </#macro>

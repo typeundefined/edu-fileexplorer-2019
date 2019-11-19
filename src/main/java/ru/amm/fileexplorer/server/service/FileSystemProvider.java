@@ -38,6 +38,10 @@ public class FileSystemProvider {
         return result;
     }
 
+    public Path getPathToPublish() {
+        return pathToPublish;
+    }
+
     public Path getAbsolutePath(Path relPath) {
         return pathToPublish.resolve(relPath);
     }

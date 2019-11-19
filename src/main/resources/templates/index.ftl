@@ -5,12 +5,20 @@
     <title>File Manager</title>
 </#macro>
 <#macro page_body>
+
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <#list directory.parentFolders as folder>
               <li class="breadcrumb-item"><a href="/?path=${folder.path?url}">${folder.name}</a></li>
       </#list>
+
     </ol>
+      <form action="/logout" method="post">
+          <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+      <button name="submit" type="submit" class="btn btn-primary" value="submit" style="float:right">Logout</button>
+      </form>
+
   </nav>
   <div class="container">
       <div class="input-group mb-3 search">
@@ -35,7 +43,13 @@
     </p>
     <div class="collapse" id="collapseExample">
         <form name="uploadingForm" enctype="multipart/form-data" method="POST">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+           <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            <#if RequestParameters.path??>
+                <#assign  path = RequestParameters.path>
+                <#else >
+                    <#assign  path = "">
+            </#if>
+          <#--  <input type="hidden" name="path" value="${path}"/>-->
             <p>
                 <label class="btn btn-outline-secondary">
                     Browse<input id="fileInput" hidden class="btn btn-primary" type="file" name="uploadingFiles" onchange="updateSize();" multiple>
@@ -81,5 +95,24 @@
           <@macro.show_all directory/>
       </div>
   </div>
+
 </#macro>
 <@render_whole_page />
+<div class="input-group input-group-sm mb-3">
+    <#if RequestParameters.path??>
+        <#assign path = RequestParameters.path/>
+        <#else >
+        <#assign path=""/>
+    </#if>
+    <form action="/createdir" method="post">
+    <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-sm" onclick="parentNode.submit()">Create directory</span>
+        <input type="text" name ="directory" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+    </div>
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <input type="hidden" name="path" value="${path}"/>
+
+</div>
+</form>
+
+
