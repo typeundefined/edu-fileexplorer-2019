@@ -13,16 +13,16 @@ import javax.servlet.http.HttpServletRequest;
 public class ErrorPageController implements ErrorController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView processError(HttpServletRequest req) {
-        int status = getErrorCode(req);
+        int status = getErrorCode( req );
         String message = "Unknown error";
-        if (status == 404) {
+        if ( status == 404 ) {
             message = "The requested page not found";
         }
-        return new ModelAndView("error-page", "errorMessage", message);
+        return new ModelAndView( "error-page", "errorMessage", message );
     }
 
     private int getErrorCode(HttpServletRequest httpRequest) {
-        return (Integer) httpRequest.getAttribute("javax.servlet.error.status_code");
+        return (Integer) httpRequest.getAttribute( "javax.servlet.error.status_code" );
     }
 
     @Override
