@@ -1,5 +1,6 @@
 <#ftl output_format="HTML">
 <#setting url_escaping_charset="UTF-8">
+<#import "/spring.ftl" as spring />
 
 <#macro common_page_head>
   <link rel="stylesheet" href="/css/bootstrap.min.css">
