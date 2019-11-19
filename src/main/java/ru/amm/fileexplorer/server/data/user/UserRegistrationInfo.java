@@ -2,10 +2,18 @@ package ru.amm.fileexplorer.server.data.user;
 
 import org.hibernate.validator.constraints.Length;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-
+@Entity
+@Table(name = "users")
 public class UserRegistrationInfo {
+    @Id
+    @GeneratedValue
+    private Long id;
 
     @NotEmpty
     @Length(max = 255)
@@ -20,6 +28,9 @@ public class UserRegistrationInfo {
 
     @Length(min = 5, max = 255)
     private String confirmPassword;
+
+    public UserRegistrationInfo() {
+    }
 
     public String getUsername() {
         return username;
@@ -51,5 +62,13 @@ public class UserRegistrationInfo {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

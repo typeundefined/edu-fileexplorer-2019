@@ -29,7 +29,7 @@
       <div class="row">
         <div class="login-panel">
           <div class="form-group">
-            <label for="full-name">Username</label>
+            <label for="full-name">Full Name</label>
             <@spring.bind "account.fullName"/>
             <input class="input-main" type="text" id="full-name" name="${spring.status.expression}" value="${spring.status.value!?html}">
 
@@ -43,7 +43,7 @@
       <div class="row">
         <div class="login-panel">
           <div class="form-group">
-            <label for="password">Username</label>
+            <label for="password">Password</label>
             <@spring.bind "account.password"/>
             <input class="input-main" type="text" id="password" name="${spring.status.expression}" value="${spring.status.value!?html}">
 
@@ -57,7 +57,7 @@
       <div class="row">
         <div class="login-panel">
           <div class="form-group">
-            <label for="password-confirm">Username</label>
+            <label for="password-confirm">Confirm Password</label>
             <@spring.bind "account.confirmPassword"/>
             <input class="input-main" type="text" id="password-confirm" name="${spring.status.expression}" value="${spring.status.value!?html}">
 
