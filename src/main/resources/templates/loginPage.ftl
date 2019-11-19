@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
     <title>Login</title>
 </head>
@@ -20,11 +20,13 @@
         </tr>
         <tr>
             <td>Password:</td>
-            <td><input type='password' class="form-control" name='password' /></td>
+            <td><input type='password' class="form-control" name='password'/></td>
         </tr>
 
         <tr>
-            <td><button name="submit" type="submit" class="btn btn-primary" value="submit">Submit</button></td>
+            <td>
+                <button name="submit" type="submit" class="btn btn-primary" value="submit">Submit</button>
+            </td>
         </tr>
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 

@@ -10,22 +10,22 @@
         <#assign  size = "—"/>
         <#assign  picture_source = 'folder.svg'/>
     </#if>
-    <div class="row p-3 noselect file-row" >
+    <div class="row p-3 noselect file-row">
         <a title="Download this file or directory"
            class="col-0" href="/download?file=${file_elem.relativePath?url}">
             <img class="pr-2" src="/img/download.svg" style="height: 14px;">
         </a>
         <#if file_elem.directory>
-          <a title="Go to this subfolder"
-             class="col mx-auto" href="/?path=${file_elem.relativePath?url}">
-              <img class="pr-2" src="/img/${picture_source}" style="height: 24px;">
-                 ${file_elem.name}
-          </a>
+            <a title="Go to this subfolder"
+               class="col mx-auto" href="/?path=${file_elem.relativePath?url}">
+                <img class="pr-2" src="/img/${picture_source}" style="height: 24px;">
+                ${file_elem.name}
+            </a>
         <#else>
-          <div class="col mx-auto">
-              <img class="pr-2" src="/img/${picture_source}" style="height: 24px;">
-                 ${file_elem.name}
-          </div>
+            <div class="col mx-auto">
+                <img class="pr-2" src="/img/${picture_source}" style="height: 24px;">
+                ${file_elem.name}
+            </div>
         </#if>
         <div class="col-6 row">
             <div class="col-8">${file_elem.lastModifiedTime?date}</div>

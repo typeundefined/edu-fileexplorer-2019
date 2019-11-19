@@ -17,10 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public class FileExplorerService {
     public static final NoOpMatcher NO_OP_MATCHER = new NoOpMatcher( );
+    private final static Logger LOG = LogManager.getLogger( FileExplorerService.class );
     @Autowired
     private FileSystemProvider provider;
-
-    private final static Logger LOG = LogManager.getLogger( FileExplorerService.class );
 
     public DirectoryContents getRootContents() {
         DirectoryContents contents = getDirectoryContents( "", NO_OP_MATCHER );

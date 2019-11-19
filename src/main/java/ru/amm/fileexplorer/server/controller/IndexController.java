@@ -107,7 +107,7 @@ public class IndexController {
         if ( path == null )
             destPath = explorerService.getRootPath( );
         else
-             destPath = explorerService.getAbsolutePath(path);
+            destPath = explorerService.getAbsolutePath( path );
 
         for (MultipartFile uploadedFile : uploadingFiles) {
             File file = destPath.resolve( uploadedFile.getOriginalFilename( ) ).toFile( );
@@ -115,7 +115,7 @@ public class IndexController {
         }
 
 
-        attributes.addAttribute( "path", String.valueOf( path ));
+        attributes.addAttribute( "path", String.valueOf( path ) );
         return "redirect:/";
     }
 
