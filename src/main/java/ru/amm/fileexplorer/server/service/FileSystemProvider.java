@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.amm.fileexplorer.server.data.FileData;
 import ru.amm.fileexplorer.server.data.FileType;
-
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import static java.util.Optional.ofNullable;
 
 @Service
@@ -114,5 +112,15 @@ public class FileSystemProvider {
         }
         Path p = Paths.get(pathToPublish, path);
         return p.toString();
+    }
+
+    public String getRightNameOfFolder(String nameOfFolder, String baseNameOfFolder) {
+        String newNameOfFolder = "";
+        if (nameOfFolder.equals(baseNameOfFolder + ",")) {
+            newNameOfFolder = baseNameOfFolder;
+        } else {
+            newNameOfFolder = nameOfFolder.replaceAll(baseNameOfFolder + ",", "");
+        }
+        return newNameOfFolder;
     }
 }

@@ -81,7 +81,7 @@
         </p>
 
         <div class="collapse" id="collapseCreateDir">
-            <form name="createDirForm" action="/createDir" enctype="multipart/form-data"
+            <form name="createDirForm" action="/createDir"
                   method="POST">
                 <input type="hidden" name="path" value="${path}"/>
                 <input type="hidden" name="nameOfFolder" value="${nameOfFolder}"/>

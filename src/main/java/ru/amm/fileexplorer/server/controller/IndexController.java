@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +21,6 @@ import ru.amm.fileexplorer.server.data.FileType;
 import ru.amm.fileexplorer.server.data.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 import ru.amm.fileexplorer.server.service.FileSystemProvider;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -118,19 +116,14 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/createDir", method = RequestMethod.POST)
-    public String createDirPost(@RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder,
+    public String createDirPost(@RequestParam(name = "path", required = false) Path path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder,
                                 RedirectAttributes attributes) throws IOException {
-        String newNameOfFolder = "";
-        if (nameOfFolder.equals(baseNameOfFolder + ",")) {
-            newNameOfFolder = baseNameOfFolder;
-        } else {
-            newNameOfFolder = nameOfFolder.replaceAll(baseNameOfFolder + ",", "");
-        }
-        String absPath = pathToPublish + "\\" + path + "\\" + newNameOfFolder;
-        File dir = new File(absPath);
+        FileSystemProvider fileSystemProvider = new FileSystemProvider();
+        Path destPath = explorerService.getAbsolutePath(path);
+        File dir = new File(destPath.resolve(fileSystemProvider.getRightNameOfFolder(nameOfFolder, baseNameOfFolder)).toString());
         dir.mkdir();
         // preserve ?path= GET parameter after the redirect
-        attributes.addAttribute("path", path);
+        attributes.addAttribute("path", path.toString());
         return "redirect:/";
     }
 
