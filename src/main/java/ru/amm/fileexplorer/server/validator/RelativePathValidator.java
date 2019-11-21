@@ -1,12 +1,13 @@
 package ru.amm.fileexplorer.server.validator;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 public class RelativePathValidator implements ConstraintValidator<RelativePath, String> {
@@ -25,10 +26,8 @@ public class RelativePathValidator implements ConstraintValidator<RelativePath, 
         if (relativePath == null)
             return true;
 
-        String absolutePath = rootDirectory + '/' + relativePath;
+        Path absolutePath = Paths.get(rootDirectory, relativePath).normalize();
 
-        absolutePath = FilenameUtils.normalize(absolutePath);
-
-        return absolutePath != null && absolutePath.startsWith(rootDirectory);
+        return absolutePath.startsWith(rootDirectory);
     }
 }
