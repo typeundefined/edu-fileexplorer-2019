@@ -34,17 +34,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/scripts/**","/register")
                 .permitAll()
                 .antMatchers("/**").not().anonymous()
-
                 .and()
                 .formLogin()
                 .loginPage("/login")
                 .failureUrl("/login?error")
                 .permitAll()
                 .and()
-
                 .logout()
-             //   .logoutUrl("/logout")
-
                 .logoutSuccessUrl("/login")
                 .permitAll();
     }
