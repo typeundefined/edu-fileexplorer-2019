@@ -31,9 +31,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/css/**", "/scripts/**")
+                .antMatchers("/css/**", "/scripts/**","/register")
                 .permitAll()
-                .antMatchers("/**").not().anonymous();
+                .antMatchers("/**").not().anonymous()
+
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login?error")
+                .permitAll()
+                .and()
+
+                .logout()
+             //   .logoutUrl("/logout")
+
+                .logoutSuccessUrl("/login")
+                .permitAll();
     }
 
     @Bean

@@ -43,6 +43,6 @@ public class RegisterController {
 
         jdbcUserDetailsManager.createUser(new User(userInfo.getUsername(), userInfo.getPassword(),
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"))));
-        return "register-ok";
+        return "redirect:/login";
     }
 }

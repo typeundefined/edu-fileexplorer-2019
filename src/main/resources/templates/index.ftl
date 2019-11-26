@@ -27,6 +27,10 @@
                   <a class="dropdown-item" onclick="changeSearch(this)">Search in children</a>
               </div>
           </div>
+          <form action="/logout" method="post">
+              <input type="hidden" name="_csrf" value="${_csrf.token}" />
+              <button type="submit" class="btn btn-secondary"/>Sign out</button>
+          </form>
       </div>
     <p>
         <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
