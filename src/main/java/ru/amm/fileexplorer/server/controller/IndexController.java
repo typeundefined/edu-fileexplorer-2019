@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,14 +22,17 @@ import ru.amm.fileexplorer.server.data.FileType;
 import ru.amm.fileexplorer.server.data.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 import ru.amm.fileexplorer.server.service.FileSystemProvider;
+import ru.amm.fileexplorer.server.validator.RelativePath;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@Validated
 public class IndexController {
     @Value("${pathToPublish}")
     String pathToPublish;
@@ -39,7 +43,7 @@ public class IndexController {
 
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public ModelAndView index(@RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder) {
+    public ModelAndView index(@RelativePath @RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder) {
         DirectoryContents dirContents;
         if (path == null) {
             dirContents = explorerService.getRootContents();
@@ -59,7 +63,7 @@ public class IndexController {
 
     @RequestMapping(path = "/search", method = RequestMethod.GET)
     public ModelAndView search(@RequestParam(name = "search") String search,
-                               @RequestParam(name = "path") String path) {
+                               @RelativePath @RequestParam(name = "path") String path) {
         DirectoryContents dirContents;
         dirContents = explorerService.getContentsFiltered(path, new NamePartialMatcher(search));
         Map<String, Object> data = new HashMap<>();
@@ -69,7 +73,7 @@ public class IndexController {
 
     @RequestMapping(path = "/searchAll", method = RequestMethod.GET)
     public ModelAndView searchAll(@RequestParam(name = "search") String search,
-                                  @RequestParam(name = "path") String path) {
+                                  @RelativePath @RequestParam(name = "path") String path) {
         DirectoryContents dirContents;
         if (!search.equals(""))
             dirContents = explorerService.getContentsFilteredAll(path, new NamePartialMatcher(search));
@@ -80,7 +84,7 @@ public class IndexController {
     }
 
     @RequestMapping(path = "/download", method = RequestMethod.GET)
-    public ResponseEntity<Resource> downloadFile(@RequestParam(name = "file") String file) {
+    public ResponseEntity<Resource> downloadFile(@RelativePath @RequestParam(name = "file") String file) {
         FileData f = explorerService.getFile(file);
         InputStreamResource fStream = new InputStreamResource(explorerService.getFileStream(f));
         String fName = f.getName();
@@ -102,16 +106,16 @@ public class IndexController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public String uploadingPost(
             @RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,
-            @RequestParam(name = "path", required = false) Path path,
+            @RelativePath @RequestParam(name = "path", required = false) String path,
             RedirectAttributes attributes)
             throws IOException {
-        Path destPath = explorerService.getAbsolutePath(path);
+        Path destPath = explorerService.getAbsolutePath(Paths.get(path));
         for (MultipartFile uploadedFile : uploadingFiles) {
             File file = destPath.resolve(uploadedFile.getOriginalFilename()).toFile();
             uploadedFile.transferTo(file);
         }
         // preserve ?path= GET parameter after the redirect
-        attributes.addAttribute("path", path.toString());
+        attributes.addAttribute("path", path);
         return "redirect:/";
     }
 
