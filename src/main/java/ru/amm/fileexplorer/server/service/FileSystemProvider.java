@@ -1,11 +1,19 @@
 package ru.amm.fileexplorer.server.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import ru.amm.fileexplorer.server.data.FileData;
-import ru.amm.fileexplorer.server.data.FileType;
-import java.io.*;
-import java.nio.file.*;
+import static java.util.Optional.ofNullable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,7 +21,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import static java.util.Optional.ofNullable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import ru.amm.fileexplorer.server.data.FileData;
+import ru.amm.fileexplorer.server.data.FileType;
 
 @Service
 public class FileSystemProvider {
@@ -59,8 +70,8 @@ public class FileSystemProvider {
 
     public String getParent(String relativePath) {
         Optional<String> path = ofNullable(Path.of(relativePath))
-                .map(Path::getParent)
-                .map(Path::toString);
+            .map(Path::getParent)
+            .map(Path::toString);
         return path.orElse("");
     }
 
@@ -106,7 +117,8 @@ public class FileSystemProvider {
             throw new DirectoryAccessException(e);
         }
     }
-    public String getPathOfFolder(String path,String pathToPublish) {
+    
+    public String getPathOfFolder(String path, String pathToPublish) {
         if (path == null) {
             path = "";
         }
@@ -114,13 +126,29 @@ public class FileSystemProvider {
         return p.toString();
     }
 
-    public String getRightNameOfFolder(String nameOfFolder, String baseNameOfFolder) {
+    public String getPathToStringOfNewFolder(String nameOfFolder, String baseNameOfFolder, Path destPath) {
         String newNameOfFolder = "";
         if (nameOfFolder.equals(baseNameOfFolder + ",")) {
             newNameOfFolder = baseNameOfFolder;
         } else {
             newNameOfFolder = nameOfFolder.replaceAll(baseNameOfFolder + ",", "");
         }
-        return newNameOfFolder;
+        String pathToString = destPath.resolve(newNameOfFolder).toString();
+        return pathToString;
+    }
+
+    public String createNewFolder(String nameOfFolder, String baseNameOfFolder, Path destPath) {
+        File dir = new File(getPathToStringOfNewFolder(nameOfFolder, baseNameOfFolder, destPath));
+        boolean result = false;
+        try {
+            dir.mkdir();
+            result = true;
+        } catch (SecurityException se) {
+            // Please, tell me what to enter in this field)
+        }
+        if (!result) {
+            return "/error";
+        }
+        return "redirect:/";
     }
 }

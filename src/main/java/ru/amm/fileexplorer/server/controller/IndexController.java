@@ -120,11 +120,9 @@ public class IndexController {
                                 RedirectAttributes attributes) throws IOException {
         FileSystemProvider fileSystemProvider = new FileSystemProvider();
         Path destPath = explorerService.getAbsolutePath(path);
-        File dir = new File(destPath.resolve(fileSystemProvider.getRightNameOfFolder(nameOfFolder, baseNameOfFolder)).toString());
-        dir.mkdir();
-        // preserve ?path= GET parameter after the redirect
+        String resultOfmkDir=fileSystemProvider.createNewFolder(nameOfFolder, baseNameOfFolder, destPath);
         attributes.addAttribute("path", path.toString());
-        return "redirect:/";
+        return resultOfmkDir;
     }
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
