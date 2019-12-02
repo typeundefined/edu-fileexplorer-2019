@@ -6,6 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
+import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.hateoas.server.core.DelegatingEntityLinks;
+import org.springframework.plugin.core.support.PluginRegistryFactoryBean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -16,8 +22,9 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import javax.validation.Validator;
 
-@EnableWebMvc
 @Configuration
+@EnableWebMvc
+@EnableHypermediaSupport(type = HypermediaType.HAL)
 @Import(SecurityConfig.class)
 public class MainConfiguration implements WebMvcConfigurer {
     private final static Logger LOG = LoggerFactory.getLogger(MainConfiguration.class);
@@ -61,5 +68,18 @@ public class MainConfiguration implements WebMvcConfigurer {
         MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
         methodValidationPostProcessor.setValidator(validator());
         return methodValidationPostProcessor;
+    }
+
+
+    @Bean
+    @Primary
+    PluginRegistryFactoryBean<EntityLinks, Class<?>> customEntityLinksRegistry() {
+
+        PluginRegistryFactoryBean<EntityLinks, Class<?>> registry = new PluginRegistryFactoryBean<>();
+        registry.setType(EntityLinks.class);
+        registry.setExclusions(new Class[]{DelegatingEntityLinks.class});
+
+        return registry;
+
     }
 }
