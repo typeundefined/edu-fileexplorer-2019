@@ -44,7 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .logout()
-                .logoutSuccessUrl("/login").and().csrf().ignoringAntMatchers("/api/**");
+                .logoutSuccessUrl("/login").and().csrf().ignoringAntMatchers("/api/**")
+                .and()
+                .cors();
         http.addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
@@ -82,7 +84,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         cors.setMaxAge(30L);
         cors.setAllowedHeaders(Arrays.asList("Auth-token", "Cache-Control", "Content-Type"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/api", cors);
+        source.registerCorsConfiguration("/api/**", cors);
         return source;
     }
 
