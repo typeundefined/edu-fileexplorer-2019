@@ -4,12 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Service;
+import ru.amm.fileexplorer.server.controller.api.exception.UnauthorizedException;
 import ru.amm.fileexplorer.server.data.api.JwtResponseDTO;
 import ru.amm.fileexplorer.server.data.api.UserLoginDTO;
 import ru.amm.fileexplorer.server.data.user.UserRegistrationInfo;
@@ -32,9 +34,15 @@ public class AuthService {
     JwtTokenProvider jwtTokenProvider;
 
     public JwtResponseDTO login(UserLoginDTO loginDTO) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
-        );
+        Authentication auth;
+        try {
+             auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
+            );
+        }
+        catch (AuthenticationException e) {
+            throw new UnauthorizedException(e.getMessage(), e);
+        }
 
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwt = jwtTokenProvider.generateToken(auth);
