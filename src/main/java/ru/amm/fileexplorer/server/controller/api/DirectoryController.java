@@ -6,6 +6,7 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.amm.fileexplorer.server.controller.api.exception.BaseAPIException;
 import ru.amm.fileexplorer.server.data.DirectoryContents;
 import ru.amm.fileexplorer.server.data.FileData;
 import ru.amm.fileexplorer.server.data.NamePartialMatcher;
@@ -49,7 +50,7 @@ public class DirectoryController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public void upload(@RequestParam("uploadingFiles") MultipartFile[] uploadingFiles,
                        @RelativePath @RequestParam(value = "path", required = false) String path,
                        HttpServletResponse response
@@ -60,7 +61,7 @@ public class DirectoryController {
             try {
                 uploadedFile.transferTo(file);
             } catch (IOException e) {
-                response.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
+                throw new BaseAPIException("Failed to upload file " + uploadedFile.getOriginalFilename(), e);
             }
         }
 
