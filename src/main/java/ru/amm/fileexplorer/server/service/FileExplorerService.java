@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.amm.fileexplorer.server.data.*;
+import ru.amm.fileexplorer.server.validator.RelativePath;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -47,7 +48,7 @@ public class FileExplorerService {
         return getDirectoryContents("", content, "");
     }
 
-    public DirectoryContents getContents(String relativePath) {
+    public DirectoryContents getContents(@RelativePath String relativePath) {
         return getDirectoryContents(relativePath, NO_OP_MATCHER);
     }
 
