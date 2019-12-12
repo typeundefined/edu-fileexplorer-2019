@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -29,7 +31,7 @@ public class FileSystemProvider {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(absPath)) {
             for (Path file : stream) {
                 BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
-                FileData fileData = toFileData(file, attr, relpath, Files.probeContentType(file));
+                FileData fileData = toFileData(file, attr, Files.probeContentType(file));
                 result.add(fileData);
             }
         } catch (IOException | DirectoryIteratorException e) {
@@ -42,7 +44,7 @@ public class FileSystemProvider {
         return pathToPublish.resolve(relPath);
     }
 
-    private FileData toFileData(Path file, BasicFileAttributes attr, String relpath, String mimeType) {
+    private FileData toFileData(Path file, BasicFileAttributes attr, String mimeType) {
         FileData fileData = new FileData();
         String name = file.getFileName().toString();
         fileData.setName(name);
@@ -55,8 +57,20 @@ public class FileSystemProvider {
             String[] m = mimeType.split("/");
             fileData.setFileType(FileType.get(m[0], m[1]));
         }
-        fileData.setRelativePath(Path.of(relpath, name).toString());
+        fileData.setRelativePath(getRelativePath(file));
         return fileData;
+    }
+
+    private String getRelativePath(Path absPath) {
+        String pathStr = absPath.toUri().toString();
+        String baseStr = pathToPublish.toUri().toString();
+        Pattern pattern = Pattern.compile("^" + Pattern.quote(baseStr) + "(.*)$");
+        Matcher matcher = pattern.matcher(pathStr);
+        if (!matcher.matches()) {
+            throw new RuntimeException("Business logic error");
+        }
+
+        return matcher.group(1);
     }
 
     public String getParent(String relativePath) {
@@ -103,12 +117,13 @@ public class FileSystemProvider {
         try {
             Path f = pathToPublish.resolve(relativePath);
             BasicFileAttributes attr = Files.readAttributes(f, BasicFileAttributes.class);
-            return toFileData(f, attr, relativePath.replace(f.getFileName().toString(), ""), Files.probeContentType(f));
+            return toFileData(f, attr, Files.probeContentType(f));
         } catch (IOException e) {
             throw new DirectoryAccessException(e);
         }
     }
-    public String getPathOfFolder(String path,String pathToPublish) {
+
+    public String getPathOfFolder(String path, String pathToPublish) {
         if (path == null) {
             path = "";
         }
