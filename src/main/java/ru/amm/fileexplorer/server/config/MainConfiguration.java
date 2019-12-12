@@ -3,10 +3,7 @@ package ru.amm.fileexplorer.server.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.hateoas.server.EntityLinks;
@@ -25,6 +22,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import javax.validation.Validator;
 
 @Configuration
+@ComponentScan(basePackages = {"ru.amm.fileexplorer.server"})
 @EnableWebMvc
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 @Import(SecurityConfig.class)
