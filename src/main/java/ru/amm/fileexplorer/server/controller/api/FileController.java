@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.HandlerMapping;
 import ru.amm.fileexplorer.server.data.DirectoryContents;
 import ru.amm.fileexplorer.server.data.FileData;
 import ru.amm.fileexplorer.server.data.FileType;
@@ -38,9 +39,10 @@ public class FileController {
     @Autowired
     private FileExplorerService service;
 
-    @GetMapping(value = "/{path:.+}")
+    @GetMapping("/**")
     @ResponseBody
-    public ResponseEntity<Resource> download(@RelativePath @PathVariable String path) {
+    public ResponseEntity<Resource> download(HttpServletRequest request) {
+        String path = (request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString().replace("/api/directory/", ""));
         FileData f = service.getFile(path);
         InputStreamResource fStream = new InputStreamResource(service.getFileStream(f));
         String fName = f.getName();

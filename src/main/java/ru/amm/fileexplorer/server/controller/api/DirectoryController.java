@@ -1,21 +1,23 @@
 package ru.amm.fileexplorer.server.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.amm.fileexplorer.server.controller.api.exception.BaseAPIException;
-import ru.amm.fileexplorer.server.data.DirectoryContents;
-import ru.amm.fileexplorer.server.data.FileData;
-import ru.amm.fileexplorer.server.data.NamePartialMatcher;
+import ru.amm.fileexplorer.server.data.*;
 import ru.amm.fileexplorer.server.data.api.DirectoryDTO;
 import ru.amm.fileexplorer.server.data.api.DirectoryShortDTO;
 import ru.amm.fileexplorer.server.data.api.FileDTO;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
 import ru.amm.fileexplorer.server.validator.RelativePath;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -35,18 +37,12 @@ public class DirectoryController {
     private FileExplorerService service;
 
 
-    @GetMapping({"/{path:.+}", "/"})
-    public DirectoryDTO directory(@PathVariable(required = false) String path) {
-        Optional<String> relPath = Optional.ofNullable(path);
-        DirectoryContents data = service.getContents(relPath.orElse(""));
-        return toDTO(data);
-    }
-
-    @GetMapping(value = {"/{path:.+}", "/"}, params = "search")
-    public DirectoryDTO directorySearch(@PathVariable(required = false) String path,
-                                        @RequestParam("search") String name) {
-        Optional<String> relPath = Optional.ofNullable(path);
-        return toDTO(service.getContentsFiltered(relPath.orElse(""), new NamePartialMatcher(name)));
+    @GetMapping(value = "/**")
+    public DirectoryDTO directorySearch(HttpServletRequest request,
+                                        @RequestParam(value = "search", defaultValue = "", required = false) String name) {
+        String relPath = (request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString().replace("/api/directory/", ""));
+        FileMatcher matcher = name.equals("") ? new NoOpMatcher() : new NamePartialMatcher(name);
+        return toDTO(service.getContentsFiltered(relPath, matcher));
     }
 
     @PostMapping
@@ -88,10 +84,9 @@ public class DirectoryController {
         String name = fileData.getName();
         dto.setName(name);
         String path = fileData.getRelativePath();
-        dto.add(
-                linkTo(methodOn(DirectoryController.class)
-                        .directory(path))
-                        .withSelfRel());
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(path);
+
+        dto.add(linkTo(DirectoryController.class).slash(path.replace("\\", "/")).withSelfRel());
         return dto;
     }
 
@@ -103,8 +98,7 @@ public class DirectoryController {
         dto.setName(fileData.getName());
 
         String path = fileData.getRelativePath();
-        WebMvcLinkBuilder linkBuilder = linkTo(methodOn(FileController.class).download(path));
-        dto.add(linkBuilder.withSelfRel());
+        dto.add(linkTo(FileController.class).slash(path.replace("\\", "/")).withSelfRel());
         return dto;
     }
 

@@ -89,7 +89,7 @@ public class FileExplorerService {
         return provider.getFileStream(f.getRelativePath());
     }
 
-    public FileData getFile(String relativePath) {
+    public FileData getFile(@RelativePath  String relativePath) {
         return provider.getFile(relativePath);
     }
 }
