@@ -84,8 +84,6 @@ public class DirectoryController {
         String name = fileData.getName();
         dto.setName(name);
         String path = fileData.getRelativePath();
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(path);
-
         dto.add(linkTo(DirectoryController.class).slash(path.replace("\\", "/")).withSelfRel());
         return dto;
     }
