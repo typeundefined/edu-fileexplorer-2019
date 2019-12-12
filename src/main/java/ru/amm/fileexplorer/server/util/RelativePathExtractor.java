@@ -1,5 +1,8 @@
 package ru.amm.fileexplorer.server.util;
 
+import org.springframework.web.util.UriUtils;
+
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +21,7 @@ public class RelativePathExtractor {
         if (matcher.matches()) {
             relPath = matcher.group(1);
         }
+        relPath = UriUtils.decode(relPath, "UTF-8");
         return relPath;
     }
 
