@@ -1,7 +1,7 @@
 package ru.amm.fileexplorer.server;
 
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import ru.amm.fileexplorer.server.util.RelativePathExtractor;
 
 public class RelativePathExtractorTest {

@@ -2,6 +2,8 @@ package ru.amm.fileexplorer.server;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.internal.matchers.Any;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +21,7 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -44,6 +47,8 @@ public class FileExplorerServiceTest {
         assertEquals("a", contents.getParentDirectoryName());
         assertEquals(2, contents.getFiles().size());
         assertEquals("a/folder", contents.getDirectoryName());
+
+        verify(provider).getParent(Mockito.any());
     }
 
     private FileData file(String name, String relPath) {
