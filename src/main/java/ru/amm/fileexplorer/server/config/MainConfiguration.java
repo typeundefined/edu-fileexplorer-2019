@@ -3,15 +3,14 @@ package ru.amm.fileexplorer.server.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.core.DelegatingEntityLinks;
 import org.springframework.plugin.core.support.PluginRegistryFactoryBean;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -23,6 +22,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import javax.validation.Validator;
 
 @Configuration
+@ComponentScan(basePackages = {"ru.amm.fileexplorer.server"})
 @EnableWebMvc
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 @Import(SecurityConfig.class)
@@ -80,6 +80,13 @@ public class MainConfiguration implements WebMvcConfigurer {
         registry.setExclusions(new Class[]{DelegatingEntityLinks.class});
 
         return registry;
+    }
 
+    @Bean
+    public HttpFirewall allowUrlEncodedPercentHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        // [KN] XXX Note that we do need this once there are unicode symbols in our path
+        firewall.setAllowUrlEncodedPercent(true);
+        return firewall;
     }
 }

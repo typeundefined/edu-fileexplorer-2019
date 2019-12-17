@@ -14,8 +14,10 @@ import ru.amm.fileexplorer.server.data.api.DirectoryDTO;
 import ru.amm.fileexplorer.server.data.api.DirectoryShortDTO;
 import ru.amm.fileexplorer.server.data.api.FileDTO;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
+import ru.amm.fileexplorer.server.util.RelativePathExtractor;
 import ru.amm.fileexplorer.server.validator.RelativePath;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import static org.springframework.web.servlet.HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE;
 
 @RestController
 @ExposesResourceFor(DirectoryDTO.class)
@@ -33,20 +36,32 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class DirectoryController {
     @Autowired
     private FileExplorerService service;
+    private final RelativePathExtractor pathExtractor = new RelativePathExtractor("directory");
 
-
-    @GetMapping({"/{path:.+}", "/"})
-    public DirectoryDTO directory(@PathVariable(required = false) String path) {
-        Optional<String> relPath = Optional.ofNullable(path);
-        DirectoryContents data = service.getContents(relPath.orElse(""));
+    // XXX Note that "path" path variable is only needed to build the HATEOAS links easily.
+    // Physically we parse the path manually since it contains arbitrary amount of slashes.
+    @GetMapping({"/{path:.+}", "/**"})
+    public DirectoryDTO directory(
+            @PathVariable(required = false, name = "path") String fakePath,
+            HttpServletRequest request) {
+        String path = getRequestPath(request);
+        String relPath = pathExtractor.extract(path);
+        DirectoryContents data = service.getContents(relPath);
         return toDTO(data);
     }
 
-    @GetMapping(value = {"/{path:.+}", "/"}, params = "search")
-    public DirectoryDTO directorySearch(@PathVariable(required = false) String path,
-                                        @RequestParam("search") String name) {
-        Optional<String> relPath = Optional.ofNullable(path);
-        return toDTO(service.getContentsFiltered(relPath.orElse(""), new NamePartialMatcher(name)));
+    private String getRequestPath(HttpServletRequest request) {
+        return (String)
+                    request.getAttribute(PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+    }
+
+    @GetMapping(value = {"/{path:.+}", "/**"}, params = "search")
+    public DirectoryDTO directorySearch(@PathVariable(required = false, name = "path") String fakePath,
+                                        @RequestParam("search") String name,
+                                        HttpServletRequest request) {
+        String path = getRequestPath(request);
+        String relPath = pathExtractor.extract(path);
+        return toDTO(service.getContentsFiltered(relPath, new NamePartialMatcher(name)));
     }
 
     @PostMapping
@@ -90,7 +105,7 @@ public class DirectoryController {
         String path = fileData.getRelativePath();
         dto.add(
                 linkTo(methodOn(DirectoryController.class)
-                        .directory(path))
+                        .directory(path, null))
                         .withSelfRel());
         return dto;
     }
