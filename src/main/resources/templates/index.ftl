@@ -50,66 +50,40 @@
                     Upload<input type="submit" hidden class="btn btn-outline-secondary" >
                 </label>
 
-                </p>
-            </form>
-            <script>
-                function updateSize() {
-                    var nBytes = 0,
-                        oFiles = document.getElementById("fileInput").files,
-                        nFiles = oFiles.length;
-                    for (var nFileId = 0; nFileId < nFiles; nFileId++) {
-                        nBytes += oFiles[nFileId].size;
-                    }
-                    var sOutput = nBytes + " bytes";
-                    // optional code for multiples approximation
-                    for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"], nMultiple = 0, nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
-                        sOutput = nApprox.toFixed(3) + " " + aMultiples[nMultiple] + " (" + nBytes + " bytes)";
-                    }
-                    // end of optional code
-                    document.getElementById("fileNum").innerHTML = nFiles;
-                    document.getElementById("fileSize").innerHTML = sOutput;
+            </p>
+        </form>
+        <script>
+            function updateSize() {
+                var nBytes = 0,
+                    oFiles = document.getElementById("fileInput").files,
+                    nFiles = oFiles.length;
+                for (var nFileId = 0; nFileId < nFiles; nFileId++) {
+                    nBytes += oFiles[nFileId].size;
                 }
-            </script>
-        </div>
-
-        <p>
-            <button class="btn btn-outline-secondary" type="button" data-toggle="collapse"
-                    data-target="#collapseCreateDir" aria-expanded="false"
-                    aria-controls="collapseCreateDir">
-                &darr; CreateDir
-            </button>
-        </p>
-
-        <div class="collapse" id="collapseCreateDir">
-            <form name="createDirForm" action="/createDir"
-                  method="POST">
-                <input type="hidden" name="path" value="${path}"/>
-                <input type="hidden" name="nameOfFolder" value="${nameOfFolder}"/>
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="nameOfFolder" placeholder="Enter name of new file">
-                </div>
-                <p>
-                    <label class="btn btn-outline-secondary">
-                        Create<input type="submit" hidden class="btn btn-outline-secondary">
-                    </label>
-                </p>
-            </form>
-        </div>
-
-        <div class="row bg-white p-3 border-bottom">
-            <div class="col">
-                <strong>Name</strong>
-            </div>
-            <div class="col-6 row">
-                <div class="col-8"><strong>Date of change</strong></div>
-                <div class="col-4"><strong>Size</strong></div>
-            </div>
-        </div>
-        <div id="files_container" class="bg-white">
-            <#import "filesView.ftl" as macro>
-            <@macro.show_all directory/>
-        </div>
+                var sOutput = nBytes + " bytes";
+                // optional code for multiples approximation
+                for (var aMultiples = ["KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"], nMultiple = 0, nApprox = nBytes / 1024; nApprox > 1; nApprox /= 1024, nMultiple++) {
+                    sOutput = nApprox.toFixed(3) + " " + aMultiples[nMultiple] + " (" + nBytes + " bytes)";
+                }
+                // end of optional code
+                document.getElementById("fileNum").innerHTML = nFiles;
+                document.getElementById("fileSize").innerHTML = sOutput;
+            }
+        </script>
     </div>
+    <div class="row bg-white p-3 border-bottom">
+          <div class="col">
+              <strong>Name</strong>
+          </div>
+          <div class="col-6 row">
+              <div class="col-8"><strong>Date of change</strong></div>
+              <div class="col-4"><strong>Size</strong></div>
+          </div>
+      </div>
+      <div id="files_container" class="bg-white">
+          <#import "filesView.ftl" as macro>
+          <@macro.show_all directory/>
+      </div>
+  </div>
 </#macro>
 <@render_whole_page />

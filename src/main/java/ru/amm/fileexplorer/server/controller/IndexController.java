@@ -1,7 +1,6 @@
 package ru.amm.fileexplorer.server.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -21,8 +20,8 @@ import ru.amm.fileexplorer.server.data.FileData;
 import ru.amm.fileexplorer.server.data.FileType;
 import ru.amm.fileexplorer.server.data.NamePartialMatcher;
 import ru.amm.fileexplorer.server.service.FileExplorerService;
-import ru.amm.fileexplorer.server.service.FileSystemProvider;
 import ru.amm.fileexplorer.server.validator.RelativePath;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,30 +33,19 @@ import java.util.Map;
 @Controller
 @Validated
 public class IndexController {
-    @Value("${pathToPublish}")
-    String pathToPublish;
-    @Value("${baseNameOfFolder}")
-    String baseNameOfFolder;
     @Autowired
     private FileExplorerService explorerService;
 
-
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public ModelAndView index(@RelativePath @RequestParam(name = "path", required = false) String path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder) {
+    public ModelAndView index(@RelativePath @RequestParam(name = "path", required = false) String path) {
         DirectoryContents dirContents;
         if (path == null) {
             dirContents = explorerService.getRootContents();
-            path = pathToPublish;
         } else {
             dirContents = explorerService.getContents(path);
         }
-        if (nameOfFolder == null) {
-            nameOfFolder = baseNameOfFolder;
-        }
         Map<String, Object> data = new HashMap<>();
         data.put("directory", dirContents);
-        data.put("nameOfFolder", nameOfFolder);
-        data.put("path", path);
         return new ModelAndView("index", data);
     }
 
@@ -117,16 +105,6 @@ public class IndexController {
         // preserve ?path= GET parameter after the redirect
         attributes.addAttribute("path", path);
         return "redirect:/";
-    }
-
-    @RequestMapping(value = "/createDir", method = RequestMethod.POST)
-    public String createDirPost(@RequestParam(name = "path", required = false) Path path, @RequestParam(name = "nameOfFolder", required = false) String nameOfFolder,
-                                RedirectAttributes attributes) throws IOException {
-        FileSystemProvider fileSystemProvider = new FileSystemProvider();
-        Path destPath = explorerService.getAbsolutePath(path);
-        String resultOfmkDir=fileSystemProvider.createNewFolder(nameOfFolder, baseNameOfFolder, destPath);
-        attributes.addAttribute("path", path.toString());
-        return resultOfmkDir;
     }
 
     @RequestMapping(path = "/testcss", method = RequestMethod.GET)
